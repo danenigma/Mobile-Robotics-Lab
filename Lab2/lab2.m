@@ -16,7 +16,7 @@ max_bearing = pi/2;
 f = figure;
 while 1
    r =  robot.laser.LatestMessage.Ranges;
-   valid_r    = r <.5 & r > 0.06; %less than one meters and > 2cm 
+   valid_r    = r <1 & r > 0.06; %less than one meters and > 2cm 
    [x_disp, y_disp, th_disp] = irToXy(i(valid_r),r(valid_r));
    %[x_disp, y_disp, th_disp] = irToXy(i, r);
    
@@ -47,5 +47,5 @@ close all; clear; clc;
 robot = raspbot();
 ideal_object_range = 0.5;
 prop_gain = 0.8;
-pause_time = 0.01;
+pause_time = 0.001;
 follow_nearest_object(robot, ideal_object_range, prop_gain, pause_time)

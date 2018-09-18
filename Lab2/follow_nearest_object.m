@@ -5,10 +5,10 @@ function [] = follow_nearest_object(robot, ideal_object_range, prop_gain,pause_t
     pause(1);
     W = 0.084;
     min_dist = .06;
-    max_object_range = 1.;
+    max_object_range = 1.5;
     max_bearing = pi/2;
     f = figure;
-
+    grid on;
     rotation_mat = [0, -1; 1, 0];
     while 1
 
@@ -19,6 +19,11 @@ function [] = follow_nearest_object(robot, ideal_object_range, prop_gain,pause_t
        obj_on_rotated_axis  = rotation_mat*[x_min, y_min]'
        if object_range < 1.
            plot(obj_on_rotated_axis(1), obj_on_rotated_axis(2), 'bx');
+           xlabel('Y');
+           ylabel('X');
+           title('Smart Luggage')
+           xlim([-2,2]);
+           ylim([-2,2]);
            if object_range == ideal_object_range
                    robot.stop();
            else
@@ -41,8 +46,6 @@ function [] = follow_nearest_object(robot, ideal_object_range, prop_gain,pause_t
        end
     end
 clf(f);
-xlabel('Y');
-ylabel('X');
-title('Smart Luggage')
+
 
 end
