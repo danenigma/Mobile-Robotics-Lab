@@ -1,10 +1,11 @@
-close all; clear; clc;
+close all; clear;clc;
 
 robot = raspbot();
 
 
-x = 0; y= 0; th = 0;
-W = 0.084;
+x = 0; y = 0; th = 0; t = 0;t_prev = 0;
+
+W = 0.09;
 
 thArray(1) = th;
 xArray(1) = x;
@@ -14,28 +15,34 @@ ks = 3.;
 kk = 15.1084;
 sf = 1.;
 v  = 0.2;
-tf = sf/v;
+tf = (sf/v);
 kth = (2*pi)/sf;
 
-Tf = 2*tf;
+Tf = tf;
 
 myPlot = plot(xArray, yArray, 'b-');
 xlim([-.50 .50]);
-ylim([-.50 .50]);
-
-
-sl_bias   = robot.encoders.LatestMessage.Vector.X;
-sr_bias   = robot.encoders.LatestMessage.Vector.Y;
+ylim([-.50 .5]);
+title('Figure 8')
+xlabel('x');
+ylabel('y');
 
 sl = 0;
 sr = 0;
 
-t  = 0;
-t_prev = 0;
+sl_bias   = robot.encoders.LatestMessage.Vector.X;
+sr_bias   = robot.encoders.LatestMessage.Vector.Y;
 
+
+
+robot.stop();
 a = tic;
 
 while( t < Tf)
+    
+    %tt = (encoderDataTimeStamp - time_bias)/ks;
+    %dtt = tt - tt_prev;
+    %tt_prev = tt;
     
     t = toc(a)/ks;
     dt = t - t_prev;
@@ -68,11 +75,10 @@ while( t < Tf)
     y  =  y  + sin(th)*a_v*dt;
      
 
-    pause(0.001);
-        
+
     set(myPlot, 'xdata', [get(myPlot,'xdata') x],...
     'ydata', [get(myPlot,'ydata') y]);
+    pause(0.005);
         
 end
-pause(0.01)
 robot.stop()

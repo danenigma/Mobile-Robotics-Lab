@@ -55,9 +55,8 @@ t = 0;
 t_prev = 0;
 
 myPlot = plot(xArray, yArray, 'b-');
-xlim([-0.5 0.5]);
-ylim([-0.5 0.5]);
-
+%xlim([-0.5 0.5]);
+%ylim([-0.5 0.5]);
 
 tic
 
@@ -89,7 +88,7 @@ close all; clear;
 
 robot = raspbot();
 robot.encoders.NewMessageFcn=@encoderEventListener;
-%global encoderDataTimeStamp;
+global encoderDataTimeStamp;
 
 x = 0; y= 0; th = 0;
 W = 0.084;
@@ -112,7 +111,7 @@ actualVR = [];
 cmdVL = [];
 cmdVR = [];
 %tic
-t_bias   = encoderDataTimeStamp;
+%t_bias   = encoderDataTimeStamp;
 t_prev   = 0;
 sl  = 0;
 sr  = 0;
@@ -183,9 +182,9 @@ close all; clear;clc;
 
 robot = raspbot();
 
-%robot.encoders.NewMessageFcn=@encoderEventListener;
+robot.encoders.NewMessageFcn=@encoderEventListener;
 
-%global encoderDataTimeStamp
+global encoderDataTimeStamp
 
 x = 0; y= 0; th = 0;
 W = 0.084;
@@ -203,7 +202,7 @@ v  = 0.2;
 tf = sf/v;
 kth = (2*pi)/sf;
 
-Tf = tf;
+Tf = ks*tf;
 
 myPlot = plot(xArray, yArray, 'b-');
 xlim([-.50 .50]);
@@ -212,7 +211,7 @@ ylim([-.50 .5]);
 
 sl_bias   = robot.encoders.LatestMessage.Vector.X;
 sr_bias   = robot.encoders.LatestMessage.Vector.Y;
-%time_bias = encoderDataTimeStamp; 
+time_bias = encoderDataTimeStamp; 
 sl = 0;
 sr = 0;
 t_prev = 0;
@@ -257,11 +256,10 @@ while( t < Tf)
     y  =  y  + sin(th)*a_v*dt;
      
 
-    pause(0.005);
-        
+
     set(myPlot, 'xdata', [get(myPlot,'xdata') x],...
     'ydata', [get(myPlot,'ydata') y]);
+    pause(0.005);
         
 end
-pause(0.01)
 robot.stop()
