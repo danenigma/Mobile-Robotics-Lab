@@ -36,7 +36,7 @@ goalDistance = 1.;
 stopTime = 6;
 errorTolerance = 0.0001;
 
-p_gain = 2.5;
+p_gain = .;
 d_gain = 0.4;
 i_gain = 0.01;
 t_delayed = 0.23;%50;
@@ -57,7 +57,7 @@ actDistPlot  = plot(timeArray, actDistArray(1) , 'g-',  'DisplayName', 'Actual d
 hold on;
 urefPlot    = plot(timeArray, urefArray(1) , 'r-',  'DisplayName', 'uref');
 xlim([0, 6]);
-ylim([0, 1100]);
+ylim([-0.02, 1.1]);
 legend('show')
 
 title('distance vs time')
@@ -149,13 +149,13 @@ while t < tf + 1 + t_delayed
     robot.sendVelocity(control, control);
 
     set(distancePlot, 'xdata', [get(distancePlot,'xdata') t],...
-    'ydata', [get(distancePlot,'ydata') s_delayed*1000]);
+    'ydata', [get(distancePlot,'ydata') s_delayed]);
     set(actDistPlot, 'xdata', [get(actDistPlot,'xdata') t],...
-    'ydata', [get(actDistPlot,'ydata') distance*1000]);
+    'ydata', [get(actDistPlot,'ydata') distance]);
     set(errorPlot, 'xdata', [get(errorPlot,'xdata') t],...
     'ydata', [get(errorPlot,'ydata') (s_delayed-distance)*1000]);
     set(urefPlot, 'xdata', [get(urefPlot,'xdata') t],...
-    'ydata', [get(urefPlot,'ydata') uref*1000]);
+    'ydata', [get(urefPlot,'ydata') uref]);
     
     pause(0.005)
     tick_count = tick_count + 1;
