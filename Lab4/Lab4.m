@@ -29,16 +29,16 @@ end
 close all; clear; clc;
 
 robot = raspbot();
-
+pause(1)
 initialized = false;
 firstTime = true;
 goalDistance = 1.;
 stopTime = 6;
 errorTolerance = 0.0001;
 
-p_gain = 2.5;
-d_gain = 0.4;
-i_gain = 0.01;
+p_gain = 2.3;
+d_gain = 0.05;
+i_gain = 0.0;
 t_delayed = 0.23;%50;
 MODE = 1;
 
@@ -57,7 +57,7 @@ actDistPlot  = plot(timeArray, actDistArray(1) , 'g-',  'DisplayName', 'Actual d
 hold on;
 urefPlot    = plot(timeArray, urefArray(1) , 'r-',  'DisplayName', 'uref');
 xlim([0, 6]);
-ylim([0, 1100]);
+ylim([0, 1.1]);
 legend('show')
 
 title('distance vs time')
@@ -70,8 +70,8 @@ errorPlot    = plot(timeArray, errorArray(1) , 'r-',  'DisplayName', 'Error');
 title('Error over time')
 xlabel('Time in secs');
 ylabel('Error in meters');
-%xlim([0, 6]);
-%ylim([-0.2, 1.1]);
+xlim([0, 6]);
+ylim([-0.2, 1.1]);
 legend('show')
 
 
@@ -105,7 +105,7 @@ t0 = toc(myClock);
 
 while t < tf + 1 + t_delayed
     t  = toc(myClock)-t0;
-    dt = t - t_prev;
+    dt = t - t_prev
     t_prev = t;
 
     if t > stopTime
@@ -127,7 +127,7 @@ while t < tf + 1 + t_delayed
         uref = 0;
     end
     s_delayed = s_delayed + uref_delayed*dt;
-    fprintf('actual distance : %.5f delayed distance: %.2f \n', 1000*distance, 1000*s_delayed);
+    fprintf('actual distance : %.5f mm delayed distance: %.2f mm \n', 1000*distance, 1000*s_delayed);
     
        
     error = s_delayed - distance;
@@ -146,18 +146,19 @@ while t < tf + 1 + t_delayed
     if control > .3
         control = .3;
     end
-    robot.sendVelocity(control, control);
-
-    set(distancePlot, 'xdata', [get(distancePlot,'xdata') t],...
-    'ydata', [get(distancePlot,'ydata') s_delayed*1000]);
-    set(actDistPlot, 'xdata', [get(actDistPlot,'xdata') t],...
-    'ydata', [get(actDistPlot,'ydata') distance*1000]);
-    set(errorPlot, 'xdata', [get(errorPlot,'xdata') t],...
-    'ydata', [get(errorPlot,'ydata') (s_delayed-distance)*1000]);
-    set(urefPlot, 'xdata', [get(urefPlot,'xdata') t],...
-    'ydata', [get(urefPlot,'ydata') uref*1000]);
     
+    robot.sendVelocity(control, control);
     pause(0.005)
+    
+    set(distancePlot, 'xdata', [get(distancePlot,'xdata') t],...
+    'ydata', [get(distancePlot,'ydata') s_delayed]);
+    set(actDistPlot, 'xdata', [get(actDistPlot,'xdata') t],...
+    'ydata', [get(actDistPlot,'ydata') distance]);
+    set(errorPlot, 'xdata', [get(errorPlot,'xdata') t],...
+    'ydata', [get(errorPlot,'ydata') (s_delayed-distance)]);
+    set(urefPlot, 'xdata', [get(urefPlot,'xdata') t],...
+    'ydata', [get(urefPlot,'ydata') uref]);
+    
     tick_count = tick_count + 1;
     
 end
