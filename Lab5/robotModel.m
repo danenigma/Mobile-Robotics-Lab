@@ -9,6 +9,9 @@ classdef robotModel < handle
     properties(Constant)
         W  = 9.25*2.54/100;   % wheel tread in m
         W2 = 9.25*2.54/2/100; % 1/2 wheel tread in m
+        my_W = 0.09;
+        my_W2 = 0.09/2;
+        
         maxWheelVelocity = 0.3 % max of either wheel in m/sec
         
         rad = .165;             % robot body radius id 12.75/2 inches
@@ -39,6 +42,12 @@ classdef robotModel < handle
         % Converts body linear and angular velocity to wheel speeds.
             vr = V + robotModel.W2*w;
             vl = V - robotModel.W2*w;
+        end
+        function [vl , vr] = My_VwTovlvr(V, w)
+        % Converts body linear and angular velocity to wheel speeds.
+            
+            vr = V + robotModel.my_W2*w;
+            vl = V - robotModel.my_W2*w;
         end
         
         function senToWorld = senToWorld(robPose)

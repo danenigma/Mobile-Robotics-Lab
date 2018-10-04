@@ -29,11 +29,11 @@ classdef figure8ReferenceControl < handle
             obj.kth = 2*pi/obj.sf;
         end
         function [V, w] = computeControl(obj,timeNow)
-               if timeNow < obj.tPause
+               if timeNow < 0
                V = 0;
                w = 0;
                else
-               t = (obj.Kv/obj.Ks)*(timeNow-obj.tPause);
+               t = (obj.Kv/obj.Ks)*timeNow;
                s = obj.v*t;
                k = (obj.kk/obj.Ks)*sin(obj.kth*s);
                V = obj.Kv * obj.v;
@@ -44,6 +44,9 @@ classdef figure8ReferenceControl < handle
         % Return the total time required for motion and for the
         % initial and terminal pauses.
         duration = (obj.Ks/obj.Kv)*(obj.sf/obj.v);
+        end
+        function v = getAbsV(obj)
+        v = abs(obj.v);
         end
     end
 end

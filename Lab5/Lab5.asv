@@ -298,7 +298,7 @@ hold on;
 YHatPlot = plot(timeArray, yHatArray, 'm-', 'DisplayName', 'yhat');
 hold on;
 ThHatPlot = plot(timeArray, thHatArray, 'k-', 'DisplayName', 'thhat');
-title('reference trajectory (x,y,th) and actual trajectory(xhat yhat thhat) ');
+title('reference trajectory (x,y,th) and actual trajectory(x y z) ');
 %ylim([-1 1])
 xlabel('time')
 legend('show')
@@ -306,7 +306,7 @@ legend('show')
 figure;
 actualTrajPlot = plot(xHatArray, yHatArray, 'b-', 'DisplayName', 'Actual trajectory');
 hold on;
-trajPlot = plot(xArray, yArray, 'r-', 'DisplayName', 'reference trajectory');
+trajPlot = plot(xArray, yArray, 'r-', 'DisplayName', 'Traj');
 xlabel('x');
 ylabel('y');
 title('Figure 8 trajectory');

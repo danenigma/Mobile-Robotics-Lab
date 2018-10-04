@@ -1,6 +1,6 @@
-close all; clear;clc;
+close all; clear; clc;
 
-robot = raspbot();
+robot = raspbot('sim');
 
 
 x = 0; y = 0; th = 0; t = 0;t_prev = 0;
@@ -76,9 +76,12 @@ while( t < Tf)
      
 
 
-    set(myPlot, 'xdata', [get(myPlot,'xdata') x],...
-    'ydata', [get(myPlot,'ydata') y]);
+    %set(myPlot, 'xdata', [get(myPlot,'xdata') x],...
+    %'ydata', [get(myPlot,'ydata') y]);
     pause(0.005);
         
 end
-robot.stop()
+robot.stop();
+robot.shutdown();
+pause(5.);
+close all;
