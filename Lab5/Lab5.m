@@ -180,7 +180,7 @@ refControl = fig8;
 
 FORWARD = 0;
 BOTH = 1.;
-tau = 0.65;
+tau = 0.6;
 
 robTraj = robotTrajectory(numSamples, init_dist, init_pose, dt, refControl);
 myController = controller(robTraj, tau, BOTH);
@@ -275,6 +275,137 @@ while true
     %errorMag = sqrt(error(1)^2 + error(2)^2);
     %set(errorPlot, 'xdata', [get(errorPlot,'xdata') timeNow],...
     %'ydata', [get(errorPlot,'ydata') error(1)]);
+    pause(0.005);
+    
+
+end
+
+robot.stop()
+robot.shutdown();
+x
+y
+th
+
+figure;
+XPlot = plot(timeArray, xArray, 'r-', 'DisplayName', 'x');
+hold on;
+YPlot = plot(timeArray, yArray, 'g-', 'DisplayName', 'y');
+hold on;
+ThPlot = plot(timeArray, thArray, 'b-', 'DisplayName', 'th');
+hold on;
+XHatPlot = plot(timeArray, xHatArray, 'c-', 'DisplayName', 'xhat');
+hold on;
+YHatPlot = plot(timeArray, yHatArray, 'm-', 'DisplayName', 'yhat');
+hold on;
+ThHatPlot = plot(timeArray, thHatArray, 'k-', 'DisplayName', 'thhat');
+title('reference trajectory (x,y,th) and actual trajectory(xhat yhat thhat) ');
+%ylim([-1 1])
+xlabel('time')
+legend('show')
+
+figure;
+actualTrajPlot = plot(xHatArray, yHatArray, 'b-', 'DisplayName', 'Actual trajectory');
+hold on;
+trajPlot = plot(xArray, yArray, 'r-', 'DisplayName', 'reference trajectory');
+xlabel('x');
+ylabel('y');
+title('Figure 8 trajectory');
+%xlim([-0.5 0.5])
+%ylim([-0.5 0.5])
+legend('show')
+figure;
+errorXPlot = plot(timeArray, errorXArray, 'r-', 'DisplayName', 'X-Error');
+hold on;
+errorYPlot = plot(timeArray, errorYArray, 'g-', 'DisplayName', 'Y-Error');
+hold on;
+errorThPlot = plot(timeArray, errorThArray, 'b-', 'DisplayName', 'Th-Error');
+hold on;
+xlabel('time')
+ylabel('error(m for x and y, rad for th)')
+%ylim([-0.05 0.05])
+legend('show')
+%pause(5.);
+%close all;
+%% with Traj follower
+close all; clear;clc;
+robot = raspbot('sim');
+robMdl = robotModel();
+pause(2.)
+Ks = 3.;
+Kv = 1.;
+tPause = 0.0;
+fig8 = figure8ReferenceControl(Ks, Kv, tPause);
+tf   = fig8.getTrajectoryDuration();
+dt = 0.001;
+numSamples = tf/dt;
+init_dist = 0;
+init_x = 0; init_y = 0;init_th=0;
+initPose = pose(init_x, init_y, init_th);
+
+FORWARD = 0;
+BOTH = 1.;
+tau = 0.8;
+
+fig8Traj = robotTrajectory(numSamples, init_dist, initPose, dt, fig8);
+myController = controller(fig8Traj, tau, BOTH);
+fig8Follower = trajectoryFollower(robot, robMdl, fig8Traj, myController);
+timeArray(1) = 0;
+%plotting arrays
+xArray(1) = init_x;
+yArray(1) = init_y;
+thArray(1)= 0;
+distanceArray(1)= init_dist;
+xHatArray(1) = 0;
+yHatArray(1) = 0;
+thHatArray(1) = 0;
+
+errorXArray(1) = 0;
+errorYArray(1) = 0;
+errorThArray(1) = 0;
+
+
+sl_bias = robot.encoders.LatestMessage.Vector.X;
+sr_bias = robot.encoders.LatestMessage.Vector.Y;
+myPoseEstimator = poseEstimator(robot, robMdl, initPose, sl_bias, sr_bias);
+sl = 0;
+sr = 0;
+x = 0;
+y = 0;
+th = 0;
+firstIteration = false;
+tick = 1;
+
+while true
+    
+    if(firstIteration== false)
+        startTic = tic();
+        timePrev = toc(startTic);
+        firstIteration= true;
+    end
+    timeNow = toc(startTic);
+    dt = timeNow - timePrev;
+    timePrev = timeNow;
+
+    if timeNow > tf 
+        robot.stop()
+        break;
+    end
+    actualPose = myPoseEstimator.update();
+    error = fig8Follower.update(timeNow, actualPose);
+    newPose = fig8Follower.trajGenerator.getPoseAtTime(timeNow);
+    
+    timeArray(tick) = timeNow;
+    xArray(tick) = newPose.x;
+    yArray(tick) = newPose.y;
+    thArray(tick) = newPose.th;
+    xHatArray(tick)   = actualPose.x;
+    yHatArray(tick)   = actualPose.y;
+    thHatArray(tick)  = actualPose.th;
+    errorXArray(tick) = error(1);
+    errorYArray(tick) = error(2);
+    errorThArray(tick) = error(3);
+    tick = tick + 1;
+    
     pause(0.005);
     
 

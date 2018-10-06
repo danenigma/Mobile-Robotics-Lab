@@ -13,6 +13,7 @@ classdef controller < handle
     mode;
     prevError;
     integralError;
+    t_prev;
     end
             
     methods(Access = public)
@@ -27,7 +28,7 @@ classdef controller < handle
             obj.controlMat = [kx, 0, 0; 0, ky, kth];
             obj.prevError = zeros(3,1);
             obj.integralError = zeros(3,1);
-            
+            obj.t_prev = 0.0;
             
         end
         function [V, w, error] = pidCorrect(obj, t, actualPose)
@@ -44,8 +45,12 @@ classdef controller < handle
             errorTh  = atan2(sin(errorTh), cos(errorTh));
             
             error = [errorPos', errorTh]';
-            obj.prevError = error;
-            obj.p = error;
+            dt = t-obj.t_prev;
+            obj.t_prev = t;
+            errorDervative = (error-obj.prevError)/dt;
+            obj.prevError  = error;
+            
+            obj.integralError = obj.integralError + error;
             
             feedBackControl = obj.controlMat*error;
             
