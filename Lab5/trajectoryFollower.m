@@ -30,7 +30,7 @@ classdef trajectoryFollower < handle
             [V, w, error] = obj.fbkController.pidCorrect(timeNow, actualPose); 
             if abs(w)>1.2
                 fprintf('I found one: %.2f \n', w);
-                w = w/abs(w);
+                w = 1.2*w/abs(w);
             end
             [vl , vr] = obj.robotMdl.My_VwTovlvr(V, w);
             

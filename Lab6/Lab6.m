@@ -44,3 +44,11 @@ hold on;
 plot(0.3048, 0.3048, 'rx');
 plot(-0.3048, -0.3048, 'gx');
 plot(-0.6096, 0.0, 'bx');
+
+%% Adding feedback
+close all; clear; clc;
+robot = raspbot('sim');
+mrpl = mrplSystem(robot);
+xf = 0.3048; yf = 0.3048; thf = 0.0;
+mrpl.executeTrajectoryToRelativePose(xf, yf, thf,1)
+robot.shutdown()

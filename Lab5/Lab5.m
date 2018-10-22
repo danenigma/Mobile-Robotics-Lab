@@ -344,10 +344,11 @@ initPose = pose(init_x, init_y, init_th);
 
 FORWARD = 0;
 BOTH = 1.;
-tau = 0.8;
+tau = 0.7;
 
 fig8Traj = robotTrajectory(numSamples, init_dist, initPose, dt, fig8);
 myController = controller(fig8Traj, tau, BOTH);
+
 fig8Follower = trajectoryFollower(robot, robMdl, fig8Traj, myController);
 timeArray(1) = 0;
 %plotting arrays
